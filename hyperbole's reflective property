@@ -1,0 +1,154 @@
+from manim import *
+
+class ReflexiveProperty(Scene):
+    def construct(self):
+
+        title_hyperbole = Text("Reflexão em uma Hipérbole")
+
+        self.play(Write(title_hyperbole))
+
+        #self.next_slide()
+
+        self.play(title_hyperbole.animate.scale(0.45))
+        self.play(title_hyperbole.animate.to_edge(UP))
+
+        # Focos da hipérbole
+        foco1_hpbl = Dot([-3,0,0],radius=0.05, color=WHITE)
+        foco2_hpbl = Dot([3,0,0],radius=0.05, color=WHITE)
+        
+        self.play(FadeIn(foco1_hpbl, foco2_hpbl))
+
+        # Adiciona o nome dos focos
+        foco1_label = MathTex("F_1", font_size=20).next_to(foco1_hpbl, LEFT)
+        foco2_label = MathTex("F_2", font_size=20).next_to(foco2_hpbl, RIGHT)
+        self.play(Write(foco1_label), Write(foco2_label))
+
+        # Pontos da hiperbole 
+        q_1 = Dot([2.5,1.29,0], radius=0.05, color=WHITE)
+        q_2 = Dot([-2.5,1.29,0], radius=0.05, color=WHITE)
+
+        label_q1 = MathTex("Q_1", font_size=20).next_to(q_1, RIGHT)
+        label_q2 = MathTex("Q_2", font_size=20).next_to(q_2, LEFT)
+
+        self.play(FadeIn(q_1, q_2), Write(label_q1), Write(label_q2))
+
+        #self.next_slide()
+
+        # Connstrução da hiperbole 
+        presentation_hpbl = MathTex(r"\text{Hipérbole como lugar geométrico}", font_size=24).to_edge(UP)
+        self.play(ReplacementTransform(title_hyperbole, presentation_hpbl))
+
+        expression_1 = MathTex(r"|\overline{F_1Q_1} - \overline{Q_1F_2}| = ", font_size=30, color=RED)
+        expression_2 = MathTex(r"|\overline{F_2Q_2} - \overline{Q_2F_1}| = ", font_size=30, color=YELLOW)
+        expression_3 = MathTex(r"|\overline{F_1F_2}|", font_size=30, color=WHITE)
+        
+        expressions = VGroup(expression_1, expression_2, expression_3).arrange(RIGHT, buff=0.2)
+        expressions.shift(DOWN)
+
+        dire_um = Line(start=[-3,0,0], end=[2.5,1.29,0], color=RED).set_stroke(width=0.95) #F1 to right side
+        dire_dois = Line(start=[2.5,1.29,0], end=[3,0,0], color=RED).set_stroke(width=0.95) #Right side to F2
+        dire_tres = Line(start=[3,0,0], end=[-2.5,1.29,0], color=YELLOW).set_stroke(width=0.95) #F2 to left side 
+        dire_quatro = Line(start=[-2.5,1.29,0], end=[-3,0,0], color=YELLOW).set_stroke(width=0.95) #Left side to F1
+        dire_cinco = Line(start=[-3,0,0], end=[3,0,0], color=WHITE)
+
+        self.play(
+            Create(dire_um), Create(dire_tres), Create(dire_dois), 
+            Create(dire_quatro), Create(dire_cinco), Write(expressions), run_time=3
+            )
+        
+        #self.next_slide()
+
+        # To draw hyperbole 
+        hiperbole = ImplicitFunction(
+            lambda x, y: (x**2 / 4) - (y**2 / 3) - 1,
+            color=BLUE
+        )
+        hiperbole.set_z_index(-1)
+
+        self.play(FadeOut(dire_um, dire_dois, dire_tres, dire_quatro, dire_cinco))
+        self.play(FadeOut(expressions))
+        self.play(Create(hiperbole), run_time=3)
+        self.play(FadeOut(q_2, label_q2))
+
+        #self.next_slide()
+
+        # Reflective Principle 
+        title_reflex_hpbl = MathTex(r"\text{Pelo princípio reflexivo em uma reta, temos a seguinte configuração}", font_size=24).to_edge(UP)
+        self.play(ReplacementTransform(presentation_hpbl, title_reflex_hpbl))
+        self.wait()
+
+        # Normal & Tangent lines
+        normal_hpbl = DashedLine(start=[0,3.031,0], end=[4.375,0,0], color=GRAY).set_stroke(width=0.95)
+        tangente_hpbl = Line(start=[1.8,0.2886,0],end=[3.33,2.5,0], color=WHITE).set_stroke(width=0.95)
+
+        self.play(Create(tangente_hpbl))
+        self.play(Create(normal_hpbl), run_time=3)
+
+        #self.next_slide()
+
+        # Dashed line between the focus 
+        dire_seis = DashedLine(start=[3,0,0], end=[-3,0,0], color=PURPLE).set_stroke(width=0.95)
+
+        # Radius toward F1 & support radius
+        raio_inicial = Line(start=[2.037, 2.5,0],end=[2.5,1.29,0], color=PURPLE)
+        raio_inicial.set_z_index(-1)
+
+        continue_raio_inicial = DashedLine(start=[2.5,1.29,0],end=[3,0,0], color=PURPLE)
+        continue_raio_inicial.set_z_index(-1)
+
+        raio_final = Line(start=[2.5,1.29,0],end=[-3,0,0], color=PURPLE)
+        raio_final.set_z_index(-1)
+
+        # Incident angles
+        theta_um = MathTex(r"\theta", font_size=20).next_to([2.5,1.29,0], UP + RIGHT*0.1)
+        theta_dois = MathTex(r"\theta", font_size=20).next_to([2.5,1.29,0], LEFT + DOWN*0.5)
+        
+        self.play(Create(raio_inicial))
+        self.play(Create(continue_raio_inicial), run_time=2)
+        self.play(Write(theta_um))
+
+        #self.next_slide()
+
+        self.play(Create(dire_seis), run_time=2)
+
+        #self.next-slide()
+
+        self.play(FadeOut(dire_seis))
+        self.play(Write(theta_dois), Create(raio_final).set_run_time(2))
+
+        #self.next_slide()
+
+        self.play(
+            FadeOut(normal_hpbl, theta_um, theta_dois, 
+            raio_final, raio_inicial, tangente_hpbl, 
+            continue_raio_inicial)
+        )
+        self.wait()
+        
+        # Description of Reflective Property 
+        texto_reflexao = MathTex(r"\text{Propriedade Reflexiva de uma Hipérbole}", font_size=24).to_edge(UP)
+        self.play(ReplacementTransform(title_reflex_hpbl, texto_reflexao))
+        self.wait()
+
+        # Shots to Hyperbole
+        disparoUm_hpbl = Create(raio_inicial, run_time=0.3)
+        disparoDois_hpbl = Create(raio_final, run_time=0.3)
+
+        erase_disparoUm = FadeOut(raio_inicial, run_time=0.2)
+        erase_disparoDois = FadeOut(raio_final, run_time=0.2)
+
+        #self.next_slide(loop=True) 
+
+        self.play(disparoUm_hpbl, Create(theta_um).set_run_time(0.3))
+        self.wait(0.1)
+        self.play(
+            erase_disparoUm, disparoDois_hpbl, 
+            Create(continue_raio_inicial).set_run_time(0.3), 
+            FadeIn(theta_dois).set_run_time(0.3), 
+            FadeOut(theta_um).set_run_time(0.2)
+            )
+        self.wait(0.1)
+        self.play(FadeOut(continue_raio_inicial), run_time=0.2)
+        self.play(erase_disparoDois, FadeOut(theta_dois).set_run_time(0.2))
+        self.wait(2)
+
